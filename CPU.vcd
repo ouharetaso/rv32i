@@ -1,0 +1,352 @@
+$date
+	Wed Oct  2 22:42:44 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module CPU_tb $end
+$var wire 1 ! memread $end
+$var wire 1 " memwrite $end
+$var wire 32 # membus [31:0] $end
+$var wire 32 $ memaddr [31:0] $end
+$var reg 1 % clk $end
+$var reg 1 & nreset $end
+$scope module DUT $end
+$var wire 1 % i_clk $end
+$var wire 1 & i_nreset $end
+$var wire 32 ' rs2data [31:0] $end
+$var wire 5 ( rs2 [4:0] $end
+$var wire 32 ) rs1data [31:0] $end
+$var wire 5 * rs1 [4:0] $end
+$var wire 5 + rd [4:0] $end
+$var wire 32 , jump_addr [31:0] $end
+$var wire 2 - jump [1:0] $end
+$var wire 32 . imm [31:0] $end
+$var wire 1 / illegal_instruction $end
+$var wire 32 0 i_membus [31:0] $end
+$var wire 1 1 en_jump $end
+$var wire 1 2 en_imm $end
+$var wire 1 3 cond $end
+$var wire 32 4 alu_result [31:0] $end
+$var wire 4 5 alu_op [3:0] $end
+$var wire 32 6 alu_input_b [31:0] $end
+$var reg 32 7 insn [31:0] $end
+$var reg 32 8 o_memaddr [31:0] $end
+$var reg 1 9 o_memread $end
+$var reg 1 : o_memwrite $end
+$var reg 32 ; pc [31:0] $end
+$var reg 32 < reg_wdata [31:0] $end
+$scope module alu $end
+$var wire 1 % i_clk $end
+$var wire 32 = i_input_b [31:0] $end
+$var wire 32 > i_input_a [31:0] $end
+$var wire 4 ? i_alu_op [3:0] $end
+$var reg 32 @ o_result [31:0] $end
+$var reg 1 3 o_zero $end
+$upscope $end
+$scope module decoder $end
+$var wire 32 A i_opcode [31:0] $end
+$var wire 32 B i_pc [31:0] $end
+$var wire 5 C rs2 [4:0] $end
+$var wire 5 D rs1 [4:0] $end
+$var wire 5 E rd [4:0] $end
+$var wire 7 F opcode [6:0] $end
+$var wire 7 G funct7 [6:0] $end
+$var wire 3 H funct3 [2:0] $end
+$var wire 32 I U_immediate [31:0] $end
+$var wire 32 J S_immediate [31:0] $end
+$var wire 32 K J_immediate [31:0] $end
+$var wire 32 L I_immediate [31:0] $end
+$var wire 32 M B_immediate [31:0] $end
+$var parameter 7 N opcode_AUIPC $end
+$var parameter 7 O opcode_BRANCH $end
+$var parameter 7 P opcode_JAL $end
+$var parameter 7 Q opcode_JALR $end
+$var parameter 7 R opcode_LOAD $end
+$var parameter 7 S opcode_LUI $end
+$var parameter 7 T opcode_OP $end
+$var parameter 7 U opcode_OP_IMM $end
+$var parameter 7 V opcode_STORE $end
+$var parameter 7 W opcode_SYSTEM $end
+$var reg 4 X o_alu_op [3:0] $end
+$var reg 1 2 o_en_imm $end
+$var reg 1 1 o_en_jump $end
+$var reg 1 / o_illegal_instruction $end
+$var reg 32 Y o_imm [31:0] $end
+$var reg 2 Z o_jump [1:0] $end
+$var reg 32 [ o_jump_addr [31:0] $end
+$var reg 5 \ o_rd [4:0] $end
+$var reg 5 ] o_rs1 [4:0] $end
+$var reg 5 ^ o_rs2 [4:0] $end
+$upscope $end
+$scope module reg_file $end
+$var wire 1 % i_clk $end
+$var wire 5 _ i_r1addr [4:0] $end
+$var wire 5 ` i_r2addr [4:0] $end
+$var wire 5 a i_waddr [4:0] $end
+$var wire 32 b i_wdata [31:0] $end
+$var wire 32 c o_r1data [31:0] $end
+$var wire 32 d o_r2data [31:0] $end
+$var reg 32 e r1data [31:0] $end
+$var reg 32 f r2data [31:0] $end
+$var integer 32 g i [31:0] $end
+$upscope $end
+$upscope $end
+$scope module mem $end
+$var wire 1 % i_clk $end
+$var wire 32 h i_memaddr [31:0] $end
+$var wire 1 ! i_memread $end
+$var wire 32 i addr [31:0] $end
+$var reg 32 j o_membus [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1110011 W
+b100011 V
+b10011 U
+b110011 T
+b110111 S
+b11 R
+b1100111 Q
+b1101111 P
+b1100011 O
+b10111 N
+$end
+#0
+$dumpvars
+b10010001101000101000010110111 j
+b0 i
+b0 h
+b100000 g
+b0 f
+b0 e
+b0 d
+b0 c
+b0 b
+b0 a
+b0 `
+b0 _
+b0 ^
+b0 ]
+b0 \
+b0 [
+b0 Z
+b0 Y
+b0 X
+b0 M
+b0 L
+b0 K
+b0 J
+b0 I
+b0 H
+b0 G
+b0 F
+b0 E
+b0 D
+b0 C
+b10000000000000000000000000000000 B
+b0 A
+b0 @
+b0 ?
+b0 >
+b0 =
+b0 <
+b10000000000000000000000000000000 ;
+0:
+19
+b0 8
+b0 7
+b0 6
+b0 5
+b0 4
+03
+02
+01
+b10010001101000101000010110111 0
+1/
+b0 .
+b0 -
+b0 ,
+b0 +
+b0 *
+b0 )
+b0 (
+b0 '
+0&
+0%
+b0 $
+b10010001101000101000010110111 #
+0"
+1!
+$end
+#1
+13
+1%
+#2
+0%
+1&
+#3
+b10010001101000101000000000000 6
+b10010001101000101000000000000 =
+0/
+b10010001101000101000000000000 .
+b10010001101000101000000000000 Y
+12
+b1 +
+b1 \
+b1 a
+b10000000000000000000000000000100 ;
+b10000000000000000000000000000100 B
+b100100011 L
+b1000101100100100010 K
+b100100100000 M
+b100100001 J
+b110111 F
+b1 E
+b101 H
+b1000 D
+b11 C
+b1001 G
+b10010001101000101000000000000 I
+b10010001101000101000010110111 7
+b10010001101000101000010110111 A
+b10000000000000000000000000000000 $
+b10000000000000000000000000000000 8
+b10000000000000000000000000000000 h
+1%
+#4
+0%
+#5
+b10010001101000101000000000000 4
+b10010001101000101000000000000 @
+b10000000000000000000000000001000 ;
+b10000000000000000000000000001000 B
+b1100111100000001000000010010011 #
+b1100111100000001000000010010011 0
+b1100111100000001000000010010011 j
+b1 i
+b10000000000000000000000000000100 $
+b10000000000000000000000000000100 8
+b10000000000000000000000000000100 h
+1%
+#6
+0%
+#7
+b11001111000 6
+b11001111000 =
+b11001111000 .
+b11001111000 Y
+b1 *
+b1 ]
+b1 _
+03
+b10000000000000000000000000001100 ;
+b10000000000000000000000000001100 B
+b10010001101000101000000000000 <
+b10010001101000101000000000000 b
+b1000000000110011 #
+b1000000000110011 0
+b1000000000110011 j
+b11001111000 L
+b1000011001111000 K
+b111001100000 M
+b11001100001 J
+b10 i
+b10011 F
+b0 H
+b1 D
+b11000 C
+b110011 G
+b1100111100000001000000000000000 I
+b1100111100000001000000010010011 7
+b1100111100000001000000010010011 A
+b10000000000000000000000000001000 $
+b10000000000000000000000000001000 8
+b10000000000000000000000000001000 h
+1%
+#8
+0%
+#9
+b0 6
+b0 =
+02
+b0 +
+b0 \
+b0 a
+b11001111000 4
+b11001111000 @
+b10000000000000000000000000010000 ;
+b10000000000000000000000000010000 B
+b0 L
+b1000000000000000 K
+b0 M
+b0 J
+b11 i
+b110011 F
+b0 E
+b0 C
+b0 G
+b1000000000000000 I
+b1000000000110011 7
+b1000000000110011 A
+b10000000000000000000000000001100 $
+b10000000000000000000000000001100 8
+b10000000000000000000000000001100 h
+1%
+#10
+b10010001101000101000000000000 )
+b10010001101000101000000000000 >
+b10010001101000101000000000000 c
+b10010001101000101000000000000 e
+0%
+#11
+b10010001101000101000000000000 4
+b10010001101000101000000000000 @
+b10000000000000000000000000010100 ;
+b10000000000000000000000000010100 B
+b11001111000 <
+b11001111000 b
+b100 i
+b10000000000000000000000000010000 $
+b10000000000000000000000000010000 8
+b10000000000000000000000000010000 h
+1%
+#12
+0%
+#13
+b10000000000000000000000000011000 ;
+b10000000000000000000000000011000 B
+b10010001101000101000000000000 <
+b10010001101000101000000000000 b
+b101 i
+b10000000000000000000000000010100 $
+b10000000000000000000000000010100 8
+b10000000000000000000000000010100 h
+1%
+#14
+0%
+#15
+b10000000000000000000000000011100 ;
+b10000000000000000000000000011100 B
+b110 i
+b10000000000000000000000000011000 $
+b10000000000000000000000000011000 8
+b10000000000000000000000000011000 h
+1%
+#16
+0%
+#17
+b10000000000000000000000000100000 ;
+b10000000000000000000000000100000 B
+b111 i
+b10000000000000000000000000011100 $
+b10000000000000000000000000011100 8
+b10000000000000000000000000011100 h
+1%
+#18
+0%

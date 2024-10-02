@@ -2,7 +2,6 @@ module RegFile_tb;
     reg             clk         = 1'b0;
     reg     [31:0]  wdata       = 32'h00000000;
     reg     [4:0]   waddr       = 32'h00000000;
-    reg             wen         = 1'b0;
     wire    [31:0]  r1data;
     reg     [4:0]   r1addr      = 32'h00000000;
     wire    [31:0]  r2data;
@@ -23,7 +22,6 @@ module RegFile_tb;
         .i_clk      (clk),
         .i_wdata    (wdata),
         .i_waddr    (waddr),
-        .i_wen      (wen),
         .o_r1data   (r1data),
         .i_r1addr   (r1addr),
         .o_r2data   (r2data),
@@ -31,28 +29,23 @@ module RegFile_tb;
     );
 
     initial begin
-        #2
-        wen = 1'b1;
         waddr = 5'h12;
         wdata = 32'hdeadbeef;
+        r1addr = 5'h12;
+        r2addr = 5'h12;
         #2
-        wen = 1'b1;
         waddr = 5'h13;
         wdata = 32'hbabecafe;
         #2
-        wen = 1'b0;
         r1addr = 5'h12;
         r2addr = 5'h13;        
         #2
-        wen = 1'b1;
         waddr = 5'h00;
         wdata = 32'hbbc0ffee;
         #2
-        wen = 1'b1;
         waddr = 5'h01;
         wdata = 32'hefbeadde;
         #2
-        wen = 1'b0;
         r1addr = 5'h00;
         r2addr = 5'h01;
         #2
