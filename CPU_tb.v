@@ -62,7 +62,7 @@ module CPU_tb;
     initial begin
         #2
         nreset = 1'b1;
-        #16
+        #160
         $finish;
     end
 

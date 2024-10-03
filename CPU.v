@@ -28,8 +28,10 @@ module cpu (
     wire            illegal_instruction;
     wire    [31:0]  alu_result;
     reg     [31:0]  reg_wdata   = 32'h00000000;
+    wire    [31:0]  alu_input_a;
     wire    [31:0]  alu_input_b;
     wire            cond;
+    reg             fetch = 1'b1;
 
     initial begin
         o_memwrite = 1'b0;
@@ -37,6 +39,7 @@ module cpu (
         o_memaddr  = 32'h00000000;
     end
 
+    assign alu_input_a = rs1data;
     assign alu_input_b = en_imm ? imm : rs2data;
 
     RegFile reg_file (
@@ -73,9 +76,50 @@ module cpu (
         .o_zero     (cond)
     );
 
-    always @(posedge i_clk) begin
+    always @(*) begin
+        o_memaddr = fetch ? pc : 32'h00000000;
     end
 
+    always @(posedge i_clk) begin
+        if (!i_nreset) begin
+            pc <= 32'h80000000;
+        end
+        else begin
+            insn <= i_membus;
+        end
+    end
+
+    always @(negedge i_clk) begin
+        if (!i_nreset) begin
+            pc <= 32'h80000000;
+        end
+        else begin
+            case (jump)
+                2'b00: begin
+                    reg_wdata <= alu_result;        // no jump
+                    pc        <= pc + 4;
+                end
+                2'b01: begin
+                    reg_wdata <= alu_result;        // jal
+                    pc        <= jump_addr;
+                end
+                2'b10: begin
+                    reg_wdata <= jump_addr;         // jalr
+                    pc        <= alu_result;
+                end
+                2'b11: begin
+                    reg_wdata <= alu_result;        // branch
+                    if (cond) begin
+                        pc <= jump_addr;
+                    end else begin
+                        pc <= pc + 4;
+                    end
+                end
+            endcase
+        end
+    end
+
+    /*
     always @(posedge i_clk or negedge i_nreset) begin
         if (!i_nreset) begin
             pc <= 32'h80000000;
@@ -107,6 +151,7 @@ module cpu (
             insn      = i_membus;
         end
     end
+    */
 
 
 endmodule

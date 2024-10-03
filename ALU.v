@@ -6,14 +6,13 @@ module ALU (
     input   wire    [31:0]  i_input_b,
     input   wire    [3:0]   i_alu_op,
     output  reg     [31:0]  o_result,
-    output  reg             o_zero
+    output  wire            o_zero
 );
     initial begin
         o_result = 32'h00000000;
-        o_zero = 1'b0;
     end
     
-    always @(posedge i_clk) begin
+    always @(*) begin
         case(i_alu_op[3:0])
             // ADD
             4'b0000: o_result <= i_input_a + i_input_b ;
@@ -47,7 +46,9 @@ module ALU (
             4'b1001: o_result <= i_input_a >= i_input_b ? 0 : 1;
             default: o_result <= 32'h00000000;
         endcase
-        o_zero <= o_result == 32'h00000000;
     end
+
+    assign o_zero = o_result == 32'h00000000;
+
 
 endmodule

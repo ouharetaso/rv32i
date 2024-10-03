@@ -10,35 +10,20 @@ module RegFile (
 
     reg [31:0] register [31:0];
 
-    reg [31:0] r1data;
-    reg [31:0] r2data;
-
     integer i;
 
     initial begin
         for (i = 0; i < 32; i = i + 1) begin
             register[i] = 32'h00000000;
         end
-
-        r1data = 32'h00000000;
-        r2data = 32'h00000000;
     end
 
-    always @(negedge i_clk) begin
+    always @(posedge i_clk) begin
         register[i_waddr] <= i_wdata;
-        case (i_r1addr)
-            5'h00: r1data <= 32'h00000000;
-            default: r1data <= register[i_r1addr];
-        endcase
-
-        case (i_r2addr)
-            5'h00: r2data <= 32'h00000000;
-            default: r2data <= register[i_r2addr];
-        endcase
     end
 
-    assign o_r1data = r1data;
-    assign o_r2data = r2data;
+    assign o_r1data = i_r1addr == 5'b00000 ? 32'h00000000 : register[i_r1addr];
+    assign o_r2data = i_r2addr == 5'b00000 ? 32'h00000000 : register[i_r2addr];
 
 
 endmodule

@@ -147,9 +147,10 @@ module Decoder (
                 o_rd                    <= 0;
                 o_rs1                   <= rs1;
                 o_rs2                   <= rs2;
-                o_en_imm                <= 1;
+                o_en_imm                <= 0;
                 o_alu_op                <= {1'b1,-funct3};
                 o_en_jump               <= 1;
+                o_jump_addr             <= i_pc + B_immediate;
                 o_jump                  <= 3;
                 o_illegal_instruction   <= 0;
             end
