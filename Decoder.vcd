@@ -1,5 +1,5 @@
 $date
-	Thu Oct  3 23:31:23 2024
+	Fri Oct  4 00:08:27 2024
 $end
 $version
 	Icarus Verilog
@@ -34,11 +34,15 @@ $var wire 32 6 S_immediate [31:0] $end
 $var wire 32 7 J_immediate [31:0] $end
 $var wire 32 8 I_immediate [31:0] $end
 $var wire 32 9 B_immediate [31:0] $end
+$scope function decode_rd $end
+$var reg 32 : i_opcode [31:0] $end
+$upscope $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 #0
 $dumpvars
+bx :
 b0 9
 b0 8
 b0 7

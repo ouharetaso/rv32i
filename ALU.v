@@ -19,7 +19,6 @@ module ALU (
         input   logic   [31:0]  i_input_b,
         input   logic   [3:0]   i_alu_op
     );
-    begin
         case(i_alu_op)
             // ADD
             4'b0000: calc_alu = i_input_a + i_input_b ;
@@ -53,7 +52,6 @@ module ALU (
             4'b1001: calc_alu = i_input_a >= i_input_b ? 0 : 1;
             default: calc_alu = 32'h00000000;
         endcase
-    end
     endfunction
 
     assign o_result = calc_alu(i_input_a, i_input_b, i_alu_op);

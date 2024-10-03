@@ -72,9 +72,25 @@ module Decoder (
     parameter opcode_LOAD       = 7'b0000011;
     parameter opcode_STORE      = 7'b0100011;
 
-    assign o_rd                 = (opcode == opcode_OP      || opcode == opcode_OP_IMM  || opcode == opcode_LUI || opcode == opcode_JAL ||
-                                   opcode == opcode_JALR    || opcode == opcode_AUIPC   || opcode == opcode_JAL) ? rd : 0;
+    function [4:0] decode_rd (
+        input   logic   [31:0]  i_opcode
+    );
+        case(i_opcode[6:0])
+            opcode_OP       : decode_rd = i_opcode[11:7];
+            opcode_OP_IMM   : decode_rd = i_opcode[11:7];
+            opcode_JAL      : decode_rd = i_opcode[11:7];
+            opcode_JALR     : decode_rd = i_opcode[11:7];
+            opcode_AUIPC    : decode_rd = i_opcode[11:7];
+            opcode_LUI      : decode_rd = i_opcode[11:7];
+            default: decode_rd = 5'b00000;
+        endcase
+    endfunction
 
+    assign o_rd = decode_rd(i_opcode);
+    /*
+    assign o_rd                 = (opcode == opcode_OP      || opcode == opcode_OP_IMM  || opcode == opcode_LUI ||
+                                   opcode == opcode_JALR    || opcode == opcode_AUIPC   || opcode == opcode_JAL) ? rd : 0;
+    */
     assign o_rs1                = (opcode == opcode_OP      || opcode == opcode_OP_IMM  || opcode == opcode_JALR || opcode == opcode_BRANCH ||
                                    opcode == opcode_LOAD    || opcode == opcode_STORE) ? rs1 : 0;
 
