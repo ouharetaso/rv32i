@@ -13,6 +13,8 @@ module Decoder (
     output  reg     [31:0]  o_jump_addr,
     output  reg     [3:0]   o_alu_op,
     output  reg     [1:0]   o_jump,
+    output  reg             o_load,
+    output  reg             o_store,
     output  reg             o_illegal_instruction
 );
     wire    [6:0]   opcode;
@@ -39,6 +41,8 @@ module Decoder (
         o_jump_addr             = 0;
         o_alu_op                = 0;
         o_jump                  = 0;
+        o_load                  = 0;
+        o_store                 = 0;
         o_illegal_instruction   = 1;
     end
 
@@ -78,6 +82,8 @@ module Decoder (
                 o_alu_op                <= {funct7[5],funct3};
                 o_en_jump               <= 0;
                 o_jump                  <= 0;
+                o_load                  <= 0;
+                o_store                 <= 0;
                 o_illegal_instruction   <= 0;
             end
             opcode_OP_IMM: begin
@@ -93,6 +99,8 @@ module Decoder (
                                            funct3;
                 o_en_jump               <= 0;
                 o_jump                  <= 0;
+                o_load                  <= 0;
+                o_store                 <= 0;
                 o_illegal_instruction   <= 0;
             end
             opcode_AUIPC: begin
@@ -105,6 +113,8 @@ module Decoder (
                 o_jump_addr             <= i_pc;
                 o_alu_op                <= 4'b0000; // add
                 o_jump                  <= 0;
+                o_load                  <= 0;
+                o_store                 <= 0;
                 o_illegal_instruction   <= 0;
             end
             opcode_LUI: begin
@@ -117,6 +127,8 @@ module Decoder (
                 o_jump_addr             <= 0;
                 o_alu_op                <= 4'b0000; // add
                 o_jump                  <= 0;
+                o_load                  <= 0;
+                o_store                 <= 0;
                 o_illegal_instruction   <= 0;
             end
             opcode_JAL: begin
@@ -129,6 +141,8 @@ module Decoder (
                 o_jump_addr             <= i_pc + J_immediate;
                 o_alu_op                <= 4'b0000; // add
                 o_jump                  <= 1;
+                o_load                  <= 0;
+                o_store                 <= 0;
                 o_illegal_instruction   <= 0;
             end
             opcode_JALR: begin
@@ -141,6 +155,8 @@ module Decoder (
                 o_jump_addr             <= i_pc + 4;
                 o_alu_op                <= 4'b0000; // add
                 o_jump                  <= 2;
+                o_load                  <= 0;
+                o_store                 <= 0;
                 o_illegal_instruction   <= 0;
             end
             opcode_BRANCH: begin
@@ -152,6 +168,36 @@ module Decoder (
                 o_en_jump               <= 1;
                 o_jump_addr             <= i_pc + B_immediate;
                 o_jump                  <= 3;
+                o_load                  <= 0;
+                o_store                 <= 0;
+                o_illegal_instruction   <= 0;
+            end
+            opcode_LOAD: begin
+                o_rd                    <= rd;
+                o_rs1                   <= rs1;
+                o_rs2                   <= 0;
+                o_en_imm                <= 1;
+                o_imm                   <= I_immediate;
+                o_alu_op                <= 4'b0000; // add
+                o_en_jump               <= 0;
+                o_jump_addr             <= 0;
+                o_jump                  <= 0;
+                o_load                  <= 1;
+                o_store                 <= 0;
+                o_illegal_instruction   <= 0;
+            end
+            opcode_STORE: begin
+                o_rd                    <= 0;
+                o_rs1                   <= rs1;
+                o_rs2                   <= rs2;
+                o_en_imm                <= 1;
+                o_imm                   <= S_immediate;
+                o_alu_op                <= 4'b0000; // add
+                o_en_jump               <= 0;
+                o_jump_addr             <= 0;
+                o_jump                  <= 0;
+                o_load                  <= 0;
+                o_store                 <= 1;
                 o_illegal_instruction   <= 0;
             end
             default: begin
