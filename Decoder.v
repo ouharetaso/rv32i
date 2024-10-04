@@ -86,11 +86,11 @@ module Decoder (
         endcase
     endfunction
 
-    assign o_rd = decode_rd(i_opcode);
-    /*
-    assign o_rd                 = (opcode == opcode_OP      || opcode == opcode_OP_IMM  || opcode == opcode_LUI ||
+    //assign o_rd = decode_rd(i_opcode);
+    
+    assign o_rd                 = (opcode == opcode_OP      || opcode == opcode_OP_IMM  || opcode == opcode_LUI || opcode == opcode_LOAD ||
                                    opcode == opcode_JALR    || opcode == opcode_AUIPC   || opcode == opcode_JAL) ? rd : 0;
-    */
+    
     assign o_rs1                = (opcode == opcode_OP      || opcode == opcode_OP_IMM  || opcode == opcode_JALR || opcode == opcode_BRANCH ||
                                    opcode == opcode_LOAD    || opcode == opcode_STORE) ? rs1 : 0;
 

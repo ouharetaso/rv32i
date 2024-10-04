@@ -6,12 +6,17 @@
 module cpu (
     input   wire            i_clk,
     input   wire            i_nreset,
-    input   wire    [31:0]  i_membus,
-    output  reg             o_memwrite,
+    inout   wire    [31:0]  b_membus,
     output  reg             o_memread,
     output  reg     [31:0]  o_memaddr
 );
-    reg     [31:0]  pc = 32'h80000000;    
+    reg     [31:0]  pc = 32'h80000000;
+    reg     [31:0]  next_pc = 32'h80000000;
+    reg             nreset = 1'b0;
+    wire    [31:0]  data_addr;
+    wire            memread;
+    wire    [31:0]  memdata_write;
+    wire    [31:0]  memdata_read;
 
     reg     [31:0]  insn = 32'h00000000;
     wire    [4:0]   rd;
@@ -31,16 +36,38 @@ module cpu (
     wire    [31:0]  alu_input_a;
     wire    [31:0]  alu_input_b;
     wire            cond;
-    reg             fetch = 1'b1;
+    wire            load;
+    wire            store;
+    //reg           fetch = 1'b1;
+    wire            fetch;
 
     initial begin
-        o_memwrite = 1'b0;
-        o_memread  = 1'b1;
         o_memaddr  = 32'h00000000;
     end
 
-    assign alu_input_a = rs1data;
-    assign alu_input_b = en_imm ? imm : rs2data;
+    assign fetch        = ((load | store) & i_clk) ? 0 : 1;
+    assign memread      = (fetch | load) ? 1 : 0;
+    assign b_membus     = memread ? 'bz : memdata_write;
+    assign memdata_read = memread ? b_membus : 32'h00000000;
+
+    assign alu_input_a  = rs1data;
+    assign alu_input_b  = en_imm ? imm : rs2data;
+    assign data_addr    = alu_result;
+    assign memdata_write= rs2data;
+
+    // sw
+    // - rising edge
+    //   - alu_out  = store address
+    //   - rs2      = store to be stored
+    //   - store    = 1
+    // - falling edge
+    //   - 
+
+    // lw
+    // - rising edge 
+    //   - rd       = register address to be stored
+    //   - alu_out  = load address
+    //   - load     = 1
 
     RegFile reg_file (
         .i_clk      (i_clk),
@@ -64,6 +91,8 @@ module cpu (
         .o_jump_addr            (jump_addr),
         .o_alu_op               (alu_op),
         .o_jump                 (jump),
+        .o_load                 (load),
+        .o_store                (store),
         .o_illegal_instruction  (illegal_instruction)
     );
 
@@ -77,35 +106,37 @@ module cpu (
     );
 
     always @(*) begin
-        o_memaddr = fetch ? pc : 32'h00000000;
+        o_memaddr = fetch ? pc : data_addr;
+        o_memread = memread;
     end
 
     always @(posedge i_clk) begin
-        if (!i_nreset) begin
+        nreset = i_nreset;
+        if (!nreset) begin
             pc <= 32'h80000000;
         end
         else begin
-            insn <= i_membus;
+            insn <= memdata_read;
         end
     end
 
-    always @(negedge i_clk) begin
-        if (!i_nreset) begin
+    always @(negedge i_clk ) begin
+        if (!nreset) begin
             pc <= 32'h80000000;
         end
         else begin
             case (jump)
                 2'b00: begin
-                    reg_wdata <= alu_result;        // no jump
-                    pc        <= pc + 4;
+                    reg_wdata <= load ? memdata_read : alu_result;        // no jump
+                    pc   <= pc + 4;
                 end
                 2'b01: begin
                     reg_wdata <= alu_result;        // jal
-                    pc        <= jump_addr;
+                    pc   <= jump_addr;
                 end
                 2'b10: begin
                     reg_wdata <= jump_addr;         // jalr
-                    pc        <= alu_result;
+                    pc   <= alu_result;
                 end
                 2'b11: begin
                     reg_wdata <= alu_result;        // branch
