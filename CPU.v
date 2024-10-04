@@ -111,9 +111,7 @@ module cpu (
     end
 
     always @(posedge i_clk) begin
-        nreset = i_nreset;
         if (!nreset) begin
-            pc <= 32'h80000000;
         end
         else begin
             insn <= memdata_read;
@@ -121,32 +119,36 @@ module cpu (
     end
 
     always @(negedge i_clk ) begin
+        nreset = i_nreset;
         if (!nreset) begin
             pc <= 32'h80000000;
+        end
+        else if (illegal_instruction) begin
         end
         else begin
             case (jump)
                 2'b00: begin
                     reg_wdata <= load ? memdata_read : alu_result;        // no jump
-                    pc   <= pc + 4;
+                    next_pc   <= pc + 4;
                 end
                 2'b01: begin
                     reg_wdata <= alu_result;        // jal
-                    pc   <= jump_addr;
+                    next_pc   <= jump_addr;
                 end
                 2'b10: begin
                     reg_wdata <= jump_addr;         // jalr
-                    pc   <= alu_result;
+                    next_pc   <= alu_result;
                 end
                 2'b11: begin
                     reg_wdata <= alu_result;        // branch
                     if (cond) begin
-                        pc <= jump_addr;
+                        next_pc <= jump_addr;
                     end else begin
-                        pc <= pc + 4;
+                        next_pc <= pc + 4;
                     end
                 end
             endcase
+            pc <= next_pc;
         end
     end
 

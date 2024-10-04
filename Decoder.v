@@ -64,6 +64,7 @@ module Decoder (
     parameter opcode_OP         = 7'b0110011;
     parameter opcode_OP_IMM     = 7'b0010011;
     parameter opcode_SYSTEM     = 7'b1110011;
+    parameter opcode_MISC_MEM   = 7'b0001111;
     parameter opcode_AUIPC      = 7'b0010111;
     parameter opcode_LUI        = 7'b0110111;
     parameter opcode_JAL        = 7'b1101111;
@@ -112,7 +113,7 @@ module Decoder (
                                   ((opcode == opcode_JAL) ? i_pc + J_immediate : i_pc) : i_pc + B_immediate;
     
     assign o_alu_op             = (opcode == opcode_OP      || opcode == opcode_OP_IMM) ? 
-                                  ((funct3 == 3'b001 || funct3 == 3'b101) ? {funct7[5],funct3} : funct3) : 
+                                  (funct3 == 3'b001 || funct3 == 3'b101) ? {funct7[5],funct3} :{1'b0,funct3} : 
                                   (opcode == opcode_BRANCH) ? {1'b1,-funct3} : 4'b0000;
 
     assign o_jump               = (opcode == opcode_JAL) ? 1 : 
@@ -123,9 +124,9 @@ module Decoder (
 
     assign o_store              = (opcode == opcode_STORE) ? 1 : 0;
     
-    assign o_illegal_instruction= (opcode == opcode_OP || opcode == opcode_OP_IMM || opcode == opcode_SYSTEM || opcode == opcode_AUIPC ||
-                                   opcode == opcode_LUI || opcode == opcode_JAL || opcode == opcode_JALR || opcode == opcode_BRANCH ||
-                                   opcode == opcode_LOAD || opcode == opcode_STORE) ? 0 : 1;
+    assign o_illegal_instruction= (opcode == opcode_OP  || opcode == opcode_OP_IMM  || opcode == opcode_SYSTEM  || opcode == opcode_AUIPC ||
+                                   opcode == opcode_LUI || opcode == opcode_JAL     || opcode == opcode_JALR    || opcode == opcode_BRANCH ||
+                                   opcode == opcode_LOAD || opcode == opcode_STORE  || opcode == opcode_SYSTEM  || opcode == opcode_MISC_MEM) ? 0 : 1;
     
     /*
     always @(*) begin
