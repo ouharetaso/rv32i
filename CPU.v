@@ -38,6 +38,7 @@ module cpu (
     wire            cond;
     wire            load;
     wire            store;
+    wire            auipc;
     //reg           fetch = 1'b1;
     wire            fetch;
 
@@ -50,7 +51,7 @@ module cpu (
     assign b_membus     = memread ? 'bz : memdata_write;
     assign memdata_read = memread ? b_membus : 32'h00000000;
 
-    assign alu_input_a  = rs1data;
+    assign alu_input_a  = auipc ? jump_addr : rs1data;
     assign alu_input_b  = en_imm ? imm : rs2data;
     assign data_addr    = alu_result;
     assign memdata_write= rs2data;
@@ -93,13 +94,14 @@ module cpu (
         .o_jump                 (jump),
         .o_load                 (load),
         .o_store                (store),
+        .o_auipc                (auipc),
         .o_illegal_instruction  (illegal_instruction)
     );
 
     ALU alu (
         .i_clk      (i_clk),
         .i_alu_op   (alu_op),
-        .i_input_a  (rs1data),
+        .i_input_a  (alu_input_a),
         .i_input_b  (alu_input_b),
         .o_result   (alu_result),
         .o_zero     (cond)
@@ -119,9 +121,9 @@ module cpu (
     end
 
     always @(negedge i_clk ) begin
-        nreset = i_nreset;
+        nreset <= i_nreset;
         if (!nreset) begin
-            pc <= 32'h80000000;
+            next_pc <= 32'h80000000;
         end
         else if (illegal_instruction) begin
         end
@@ -129,26 +131,25 @@ module cpu (
             case (jump)
                 2'b00: begin
                     reg_wdata <= load ? memdata_read : alu_result;        // no jump
-                    next_pc   <= pc + 4;
+                    pc        <= pc + 4;
                 end
                 2'b01: begin
                     reg_wdata <= alu_result;        // jal
-                    next_pc   <= jump_addr;
+                    pc        <= jump_addr;
                 end
                 2'b10: begin
                     reg_wdata <= jump_addr;         // jalr
-                    next_pc   <= alu_result;
+                    pc        <= alu_result;
                 end
                 2'b11: begin
                     reg_wdata <= alu_result;        // branch
                     if (cond) begin
-                        next_pc <= jump_addr;
+                        pc <= jump_addr;
                     end else begin
-                        next_pc <= pc + 4;
+                        pc <= pc + 4;
                     end
                 end
             endcase
-            pc <= next_pc;
         end
     end
 

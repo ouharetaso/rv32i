@@ -15,6 +15,7 @@ module Decoder (
     output  wire    [1:0]   o_jump,
     output  wire            o_load,
     output  wire            o_store,
+    output  wire            o_auipc,
     output  wire            o_illegal_instruction
 );
     wire    [6:0]   opcode;
@@ -109,8 +110,9 @@ module Decoder (
     assign o_en_jump            = (opcode == opcode_AUIPC   || opcode == opcode_BRANCH  || opcode == opcode_JAL || opcode == opcode_JALR)
                                 ? 1 : 0;
     
-    assign o_jump_addr          = (opcode == opcode_AUIPC   || opcode == opcode_JAL || opcode == opcode_JALR) ? 
-                                  ((opcode == opcode_JAL) ? i_pc + J_immediate : i_pc) : i_pc + B_immediate;
+    assign o_jump_addr          = opcode == opcode_JALR ? i_pc + 4 : 
+                                  opcode == opcode_JAL  ? i_pc + J_immediate : 
+                                  opcode == opcode_BRANCH ? i_pc + B_immediate : i_pc;
     
     assign o_alu_op             = (opcode == opcode_OP      || opcode == opcode_OP_IMM) ? 
                                   (funct3 == 3'b001 || funct3 == 3'b101) ? {funct7[5],funct3} :{1'b0,funct3} : 
@@ -123,6 +125,8 @@ module Decoder (
     assign o_load               = (opcode == opcode_LOAD) ? 1 : 0;
 
     assign o_store              = (opcode == opcode_STORE) ? 1 : 0;
+
+    assign o_auipc              = (opcode == opcode_AUIPC) ? 1 : 0;
     
     assign o_illegal_instruction= (opcode == opcode_OP  || opcode == opcode_OP_IMM  || opcode == opcode_SYSTEM  || opcode == opcode_AUIPC ||
                                    opcode == opcode_LUI || opcode == opcode_JAL     || opcode == opcode_JALR    || opcode == opcode_BRANCH ||

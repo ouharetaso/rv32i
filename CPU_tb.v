@@ -13,8 +13,10 @@ module Memory (
     
     assign data_0x40 = memory[8'h40];
 
+
     initial begin
-        $readmemh("tests/rv32ui-p-add.hex", memory);
+        $readmemh("tests/rv32ui-p-jalr.hex", memory);
+        //$readmemh("tests/rv32ui-p-addi.hex", memory);
         //$readmemh("test.hex", memory);
     end
 
@@ -71,6 +73,7 @@ module CPU_tb;
         //#1
         nreset = 1'b1;
         #114514
+        $display("gp(x3): %h", DUT.reg_file.register[3]);
         $finish;
     end
 
