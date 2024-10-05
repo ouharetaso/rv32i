@@ -4,18 +4,19 @@ module Memory (
     input   wire    [31:0]  i_memaddr,
     inout   wire    [31:0]  b_membus
 );
-    parameter memory_size = 32'h00002000;
+    parameter memory_size = 32'h00004000;
 
     reg [31:0] memory [0:memory_size-1];
     wire [31:0] addr;
-    wire [31:0] data_0x40;
+    wire [31:0] data_0x2004;
 
     
-    assign data_0x40 = memory[8'h40];
+    assign data_0x2004 = memory[32'h2004 >> 2];
 
 
     initial begin
-        $readmemh("tests/rv32ui-p-jalr.hex", memory);
+        $readmemh("tests/rv32ui-p-fence_i.hex", memory);
+        //$readmemh("tests/rv32ui-p-jalr.hex", memory);
         //$readmemh("tests/rv32ui-p-addi.hex", memory);
         //$readmemh("test.hex", memory);
     end
@@ -27,7 +28,7 @@ module Memory (
     end
 
     assign b_membus = i_memread ? memory[addr] : 'bz;
-    assign addr = (32'h80000000 <= i_memaddr && i_memaddr < (32'h80000000 + (memory_size >> 2))) ? (i_memaddr - 32'h80000000) >> 2 : 32'h00000000;
+    assign addr = (32'h80000000 <= i_memaddr && i_memaddr < (32'h80000000 + memory_size)) ? (i_memaddr - 32'h80000000) >> 2 : 32'h00000000;
                                  
 
 endmodule

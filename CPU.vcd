@@ -1,5 +1,5 @@
 $date
-	Sat Oct  5 08:25:32 2024
+	Sat Oct  5 09:11:20 2024
 $end
 $version
 	Icarus Verilog
@@ -105,7 +105,7 @@ $upscope $end
 $upscope $end
 $scope module mem $end
 $var wire 32 h b_membus [31:0] $end
-$var wire 32 i data_0x40 [31:0] $end
+$var wire 32 i data_0x2004 [31:0] $end
 $var wire 1 $ i_clk $end
 $var wire 32 j i_memaddr [31:0] $end
 $var wire 1 " i_memread $end
@@ -117,7 +117,7 @@ $enddefinitions $end
 $dumpvars
 b0 k
 b10000000000000000000000000000000 j
-b10000000000000000000001010110111 i
+bx i
 b101000000000000000001101111 h
 b100000 g
 b0 f
