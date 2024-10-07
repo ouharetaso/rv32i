@@ -1,4 +1,4 @@
-# RV32I FPGA Project
+# RV32I
 
 A single-cycle unprivileged RV32I implementation in Verilog
 
